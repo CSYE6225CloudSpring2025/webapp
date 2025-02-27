@@ -21,7 +21,41 @@ jobs:
     runs-on: ubuntu-latest
     name: Packer AMI Build
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.DB_NAME }}
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: npm test
+
       - name: Checkout Code
         uses: actions/checkout@v3
 
@@ -152,4 +186,3 @@ jobs:
         working-directory: ./packer
         run: |
           packer build --var-file=variables.pkvars.hcl --var "gcp_credentials_json=$GCP_SERVICE_ACCOUNT_KEY" webapp-image.pkr.hcl
-
