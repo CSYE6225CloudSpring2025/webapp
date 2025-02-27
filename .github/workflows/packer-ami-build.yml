@@ -1,11 +1,3 @@
-# name: Packer Build
-# "on":
-#   pull_request:
-#     types:
-#       - closed
-#     branches:
-#       - main
-
 name: Packer Build
 
 on:
