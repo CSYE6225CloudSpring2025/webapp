@@ -37,7 +37,7 @@ build {
       "sudo apt-get install -y mysql-server nodejs npm",
       "sudo systemctl enable mysql",
       "sudo systemctl start mysql",
-      "sudo mysql -u root -p'${{ secrets.DB_PASSWORD }}' ",
+      "sudo mysql -u root -p'${ var.DB_PASSWORD }' ",
       "GRANT ALL PRIVILEGES ON *.* TO '${var.DB_USER}'@'localhost' IDENTIFIED BY '${var.DB_PASSWORD}' WITH GRANT OPTION; FLUSH PRIVILEGES;",
       "sudo mysql -e \"ALTER USER '${var.DB_USER}'@'localhost' IDENTIFIED WITH 'mysql_native_password' BY '${var.DB_PASSWORD}'; CREATE DATABASE ${var.DB_NAME}; GRANT ALL PRIVILEGES ON ${var.DB_NAME}.* TO '${var.DB_USER}'@'localhost'; FLUSH PRIVILEGES;\"",
       "sudo useradd -r -s /usr/sbin/nologin csye6225 || true",
